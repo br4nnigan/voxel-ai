@@ -106,11 +106,16 @@
 		for (var x = 0, voxel; x < canvasScaledX; x++) {
 			for (var y = 0, prev, prevCol, currCol, nextCol; y < canvasScaledY; y++) {
 
-				prevCol = voxels[x-1];
+
 				currCol = voxels[x];
-				nextCol = voxels[x+1];
 
 				voxel = currCol[y];
+
+				if ( voxel.x !== null ) break;
+
+				prevCol = voxels[x-1];
+				nextCol = voxels[x+1];
+
 
 				voxel.x = x;
 				voxel.y = y;
@@ -291,6 +296,7 @@
 
 		if ( newValue < oldValue ) {
 			genesis();
+			givePropertiesToVoxels();
 		}
 
 		eachVoxel(function (voxel) {
