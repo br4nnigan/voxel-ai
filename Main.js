@@ -144,6 +144,18 @@
 		}
 	}
 
+	function eachVoxel(callbackFn) {
+
+		if ( !adam ) return;
+		var voxel = adam;
+
+		do {
+			if ( voxel.x <= canvasScaledX && voxel.y <= canvasScaledY ) {
+				callbackFn(voxel);
+			}
+		} while ( voxel = voxel.next );
+	}
+
 	function out(str) {
 		var row = document.createElement("div");
 			row.textContent = str;
