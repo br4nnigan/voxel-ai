@@ -237,31 +237,10 @@
 
 		if ( mousedown ) {
 
-			var voxel;
 			var x = event.clientX - event.target.offsetLeft;
 			var y = event.clientY - event.target.offsetTop;
 
-			voxel = getVoxel(x, y);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x-1, y);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x, y-1);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x+1, y);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x, y+1);
+			var voxel = getVoxel(x, y);
 			if ( voxel ) {
 				voxel.isAlive = true;
 				voxel.render();
