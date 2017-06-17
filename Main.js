@@ -13,8 +13,6 @@
 	var inputFps = document.getElementById("fps_in");
 	var canvas = document.getElementById("c");
 
-	var onDead = "loop"; // reset, loop, stop
-
 	// state
 	var running = false;
 	var mousedown = false;
@@ -316,27 +314,7 @@
 		fps = Math.round(1000 / (now - time));
 		time = now;
 
-		var livingVoxels = renderVoxels();
-
-		if ( livingVoxels === 0 ) {
-
-			switch ( onDead ) {
-
-				case "reset":
-					out( "all dead after frame "+frame );
-					frame = 0;
-					setVoxelProperties();
-					break;
-
-				case "stop":
-					out( "all dead after frame "+frame );
-					stop();
-					break;
-
-				case "loop":
-					// do nothing
-			}
-		}
+		renderVoxels();
 
 		if ( running ) {
 			nextFrame();
