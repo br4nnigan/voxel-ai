@@ -8,7 +8,9 @@
 <button id="next">next</button>
 <button id="clear">clear</button>
 
-<input id="fps_in" size="3" placeholder="max fps"></input>
+<input id="fps_in" style="width: 4em" placeholder="max fps" type="text" pattern="^\d*$"/>
+<input id="scale" size="4" placeholder="scale" value="4" type="text" pattern="^\d*$"/>
+
 <div id="out" style="height: 5em; width: 300px; overflow: auto; border: solid 1px grey; margin: 10px 0"></div>
 <div id="fps_out" style="text-align: right; width: 4em; user-select: none; -webkit-user-select: none; font-weight: bold; font-family: sans-serif; font-size: 10px; color: red">&nbsp;</div>
 <canvas id="c" style="cursor: default; background: white"></canvas>

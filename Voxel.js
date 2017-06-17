@@ -15,7 +15,8 @@ function Voxel( x, y, canvas ) {
 	this.y = null;
 
 	this.next = null;
-	this.isAlive = false;
+	this.isAlive = null;
+	this.wasAlive = null;
 	this.scale = 1;
 
 	this.feelsAlive = function () {
