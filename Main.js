@@ -18,9 +18,10 @@
 	// state
 	var running = false;
 	var mousedown = false;
+	var resizeTimer = 0;
 	var fpsMax = -1;
-
-	// config
+	var canvasScaledX = 0;
+	var canvasScaledY = 0;
 	var scale = 4;
 
 	var adam = null;
@@ -59,6 +60,9 @@
 		canvas.width = window.innerWidth - (parseInt(getComputedStyle(document.body).marginLeft) * 2);
 		canvas.height = window.innerHeight - (parseInt(getComputedStyle(document.body).marginTop) * 2) - canvas.offsetTop;
 
+		canvasScaledX = Math.floor(canvas.width / scale);
+		canvasScaledY = Math.floor(canvas.height / scale);
+
 		requestAnimationFrame(function () {
 			frame = 0;
 			renderVoxels(true);
@@ -68,16 +72,29 @@
 
 	function genesis() {
 
-		for (var x = 0, col; x < canvas.width / scale; x++) {
 
-			col = [];
-			voxels[voxels.length] = col;
+		for (var x = 0, col; x < canvasScaledX; x++) {
 
-			for (var y = 0; y < canvas.height / scale; y++) {
+			voxels[x] = voxels[x] || [];
+			col = voxels[x];
 
-				col[col.length] = new Voxel( x, y, canvas );
+			for (var y = 0; y < canvasScaledY; y++) {
+
+				col[y] = col[y] || new Voxel( x, y, canvas );
+
+// 				if ( y == canvasScaledY - 1 && col[y + 1] ) {
+// console.log('test');
+// 					col.length = canvasScaledY;
+// 				}
 			}
+
+			// if ( x == canvasScaledX - 1 && voxels[x + 1] ) {
+
+			// 	voxels.length =  canvasScaledX;
+			// }
 		}
+		console.log("genesis", voxels.length, voxels[0].length, canvas.height );
+
 	}
 
 	function setVoxelProperties() {
@@ -90,6 +107,10 @@
 			for (var y = 0, prevCol, nextCol, prev; y < voxels[x].length; y++) {
 
 				voxel = voxels[x][y];
+
+				if ( voxel.x !== null ) {
+					continue;
+				}
 
 				voxel.x = x;
 				voxel.y = y;
@@ -149,15 +170,19 @@
 		}
 
 		do {
+			if ( voxel.x > canvasScaledX || voxel.y > canvasScaledY ) {
+				continue;
+			}
+
 			voxel.wasAlive = voxel.isAlive;
+
 			if ( frame > 0 ) {
 				voxel.isAlive = voxel.feelsAlive();
 			}
 			if ( voxel.isAlive ) livingVoxels++;
 
-			// if ( frame%2 === 0 ) {
-				voxel.render(force);
-			// }
+			voxel.render(force);
+
 		} while ( voxel = voxel.next );
 
 		return livingVoxels;
@@ -298,6 +323,12 @@
 	function onWindowResize() {
 
 		sizeCanvas();
+
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(function () {
+			genesis();
+			setVoxelProperties();
+		}, 1000);
 	}
 
 	function onAnimationFrame() {
