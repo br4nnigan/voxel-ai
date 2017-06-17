@@ -35,11 +35,6 @@
 
 	(function initialize() {
 
-		sizeCanvas();
-
-
-// canvas.style.transform = "scale(30) translate(50%, 50%)"
-
 		canvas.addEventListener("mousedown", onCanvasMouseDown);
 		canvas.addEventListener("mouseup", onCanvasMouseUp);
 		canvas.addEventListener("mouseleave", onCanvasMouseLeave);
@@ -52,6 +47,8 @@
 		inputFps.addEventListener("input", onFpsInput);
 
 		window.addEventListener("resize", onWindowResize);
+
+		sizeCanvas();
 		genesis();
 		setVoxelProperties();
 
@@ -60,8 +57,8 @@
 
 	function sizeCanvas() {
 
-		canvas.width = window.innerWidth - (parseInt(getComputedStyle(document.body).margin) * 2);
-		canvas.height = window.innerHeight - (parseInt(getComputedStyle(document.body).margin) * 2) - canvas.offsetTop;
+		canvas.width = window.innerWidth - (parseInt(getComputedStyle(document.body).marginLeft) * 2);
+		canvas.height = window.innerHeight - (parseInt(getComputedStyle(document.body).marginTop) * 2) - canvas.offsetTop;
 
 		requestAnimationFrame(function () {
 			frame = 0;

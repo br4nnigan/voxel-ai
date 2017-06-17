@@ -56,8 +56,8 @@
 
 	function sizeCanvas() {
 
-		canvas.width = window.innerWidth - (parseInt(getComputedStyle(document.body).margin) * 2);
-		canvas.height = window.innerHeight - (parseInt(getComputedStyle(document.body).margin) * 2) - canvas.offsetTop;
+		canvas.width = window.innerWidth - (parseInt(getComputedStyle(document.body).marginLeft) * 2);
+		canvas.height = window.innerHeight - (parseInt(getComputedStyle(document.body).marginTop) * 2) - canvas.offsetTop;
 
 		requestAnimationFrame(function () {
 			frame = 0;
