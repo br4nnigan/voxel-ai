@@ -148,18 +148,18 @@
 		} while ( voxel = voxel.next );
 	}
 
-	function out(str) {
+	// function out(str) {
 
-		var row = document.createElement("div");
-			row.textContent = str;
+	// 	var row = document.createElement("div");
+	// 		row.textContent = str;
 
-		divOut.appendChild(row);
-		divOut.scrollTop = divOut.scrollHeight;
+	// 	divOut.appendChild(row);
+	// 	divOut.scrollTop = divOut.scrollHeight;
 
-		if ( divOut.children.length > 20 ) {
-			divOut.removeChild(divOut.children[0]);
-		}
-	}
+	// 	if ( divOut.children.length > 20 ) {
+	// 		divOut.removeChild(divOut.children[0]);
+	// 	}
+	// }
 
 	function renderVoxels(force) {
 
@@ -187,7 +187,7 @@
 
 	function start() {
 
-		out( "started" );
+		// out( "started" );
 
 		frame = 0;
 		running = true;
@@ -202,7 +202,7 @@
 		running = false;
 		clearInterval(interval);
 		divFps.innerHTML = "&nbsp;";
-		out( "stopped" );
+		// out( "stopped" );
 	}
 
 	function getVoxel(x, y) {

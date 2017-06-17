@@ -12,17 +12,17 @@
 	var next = document.getElementById("next");
 	var divFps = document.getElementById("fps_out");
 	var inputFps = document.getElementById("fps_in");
+	var inputScale = document.getElementById("scale");
 	var canvas = document.getElementById("c");
-
-	var onDead = "loop"; // reset, loop, stop
 
 	// state
 	var running = false;
 	var mousedown = false;
+	var resizeTimer = 0;
 	var fpsMax = -1;
-
-	// config
-	var scale = 4;
+	var canvasScaledX = 0;
+	var canvasScaledY = 0;
+	var scale = 1;
 
 	var adam = null;
 	var voxels = [];
@@ -45,12 +45,16 @@
 		next.addEventListener("click", onNextFrameRequest);
 
 		inputFps.addEventListener("input", onFpsInput);
+		inputScale.addEventListener("input", onScaleInput);
 
 		window.addEventListener("resize", onWindowResize);
 
+		scale = inputScale.value || 1;
+		fpsMax = inputFps.value || -1;
+
 		sizeCanvas();
 		genesis();
-		setVoxelProperties();
+		givePropertiesToVoxels();
 
 	})();
 
@@ -60,6 +64,10 @@
 		canvas.width = window.innerWidth - (parseInt(getComputedStyle(document.body).marginLeft) * 2);
 		canvas.height = window.innerHeight - (parseInt(getComputedStyle(document.body).marginTop) * 2) - canvas.offsetTop;
 
+		canvasScaledX = Math.floor(canvas.width / scale);
+		canvasScaledY = Math.floor(canvas.height / scale);
+
+		// setting canvas width/height clears canvas, so we have to rerender every voxel
 		requestAnimationFrame(function () {
 			frame = 0;
 			renderVoxels(true);
@@ -69,76 +77,90 @@
 
 	function genesis() {
 
-		for (var x = 0, col; x < canvas.width / scale; x++) {
+		for (var x = 0, col; x < canvasScaledX; x++) {
 
-			col = [];
-			voxels[voxels.length] = col;
+			voxels[x] = voxels[x] || [];
+			col = voxels[x];
 
-			for (var y = 0; y < canvas.height / scale; y++) {
+			for (var y = 0; y < canvasScaledY; y++) {
 
-				col[col.length] = new Voxel( x, y, canvas );
+				col[y] = col[y] || new Voxel( x, y, canvas );
+
+				if ( x === 0 && y === 0 ) {
+					adam = col[y];
+				}
+// 				if ( y == canvasScaledY - 1 && col[y + 1] ) {
+// 					col.length = canvasScaledY;
+// 				}
 			}
+
+			// if ( x == canvasScaledX - 1 && voxels[x + 1] ) {
+			// 	voxels.length =  canvasScaledX;
+			// }
 		}
+		// console.log("genesis, voxels:", voxels.length + "x" + voxels[0].length, "canvas: " + canvas.width + "x" + canvas.height, "adam:", adam );
+
 	}
 
-	function setVoxelProperties() {
+	function givePropertiesToVoxels() {
 
-		for (var x = 0, voxel; x < voxels.length; x++) {
+		for (var x = 0, voxel; x < canvasScaledX; x++) {
+			for (var y = 0, prev, prevCol, currCol, nextCol; y < canvasScaledY; y++) {
 
-			var r = Math.random();
-			var col = voxels[x];
+				prevCol = voxels[x-1];
+				currCol = voxels[x];
+				nextCol = voxels[x+1];
 
-			for (var y = 0, prevCol, nextCol, prev; y < voxels[x].length; y++) {
-
-				voxel = voxels[x][y];
+				voxel = currCol[y];
 
 				voxel.x = x;
 				voxel.y = y;
 
-				prevCol = voxels[x-1];
-				nextCol = voxels[x+1];
+				voxel.scale = scale;
 
 				voxel.tl = prevCol ? prevCol[y-1] : undefined;
-				voxel.t  = col[y-1] || undefined;
+				voxel.t  = currCol[y-1] || undefined;
 				voxel.tr = nextCol ? nextCol[y-1] : undefined;
 				voxel.r  = nextCol ? nextCol[y] : undefined;
 				voxel.br = nextCol ? nextCol[y+1] : undefined;
-				voxel.b  = col[y+1] || undefined;
+				voxel.b  = currCol[y+1] || undefined;
 				voxel.bl = prevCol ? prevCol[y+1] : undefined;
 				voxel.l  = prevCol ? prevCol[y] : undefined;
 
 				voxel.isAlive = false;
-				voxel.scale = scale;
-
-				// voxel.isAlive = (y > 50 && y < 60 && x > 50 && x < 60 );
-				// voxel.isAlive = (y===3 && x > 1 && x < 5)
-				// voxel.isAlive = r * Math.random() > 0.2;
 
 				if ( prev ) {
 					prev.next = voxel;
-				}
-
-				if ( x === 0 && y === 0 ) {
-					adam = voxel;
 				}
 				prev = voxel;
 			}
 		}
 	}
 
-	function out(str) {
-		var row = document.createElement("div");
-			row.textContent = str;
+	function eachVoxel(callbackFn) {
 
-		divOut.appendChild(row);
-		divOut.scrollTop = divOut.scrollHeight;
+		if ( !adam ) return;
+		var voxel = adam;
 
-		if ( divOut.children.length > 20 ) {
-			divOut.removeChild(divOut.children[0]);
-		}
+		do {
+			if ( voxel.x <= canvasScaledX && voxel.y <= canvasScaledY ) {
+				callbackFn(voxel);
+			}
+		} while ( voxel = voxel.next );
 	}
 
+	// function out(str) {
 
+	// 	var row = document.createElement("div");
+	// 		row.textContent = str;
+
+	// 	divOut.appendChild(row);
+	// 	divOut.scrollTop = divOut.scrollHeight;
+
+	// 	if ( divOut.children.length > 20 ) {
+	// 		divOut.removeChild(divOut.children[0]);
+	// 	}
+	// }
 
 	function renderVoxels(force) {
 
@@ -149,24 +171,24 @@
 			return;
 		}
 
-		do {
+		eachVoxel(function (voxel) {
+
 			voxel.wasAlive = voxel.isAlive;
+
 			if ( frame > 0 ) {
 				voxel.isAlive = voxel.feelsAlive();
 			}
 			if ( voxel.isAlive ) livingVoxels++;
 
-			// if ( frame%2 === 0 ) {
-				voxel.render(force);
-			// }
-		} while ( voxel = voxel.next );
+			voxel.render(force);
+		});
 
 		return livingVoxels;
 	}
 
 	function start() {
 
-		out( "started" );
+		// out( "started" );
 
 		frame = 0;
 		running = true;
@@ -181,7 +203,7 @@
 		running = false;
 		clearInterval(interval);
 		divFps.innerHTML = "&nbsp;";
-		out( "stopped" );
+		// out( "stopped" );
 	}
 
 	function getVoxel(x, y) {
@@ -213,31 +235,10 @@
 
 		if ( mousedown ) {
 
-			var voxel;
 			var x = event.clientX - event.target.offsetLeft;
 			var y = event.clientY - event.target.offsetTop;
 
-			voxel = getVoxel(x, y);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x-1, y);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x, y-1);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x+1, y);
-			if ( voxel ) {
-				voxel.isAlive = true;
-				voxel.render();
-			}
-			voxel = getVoxel(x, y+1);
+			var voxel = getVoxel(x, y);
 			if ( voxel ) {
 				voxel.isAlive = true;
 				voxel.render();
@@ -279,6 +280,32 @@
 		fpsMax = inputFps.value || -1;
 	}
 
+	function onScaleInput() {
+
+		var newValue = inputScale.value || 1;
+		var oldValue = scale;
+
+		scale = inputScale.value || 1;
+
+		canvasScaledX = Math.floor(canvas.width / scale);
+		canvasScaledY = Math.floor(canvas.height / scale);
+
+		if ( newValue < oldValue ) {
+			genesis();
+		}
+
+		eachVoxel(function (voxel) {
+			voxel.scale = scale;
+		});
+		console.log("onscaleinput", newValue);
+		console.log("adam", adam);
+
+		requestAnimationFrame(function () {
+			frame = 0;
+			renderVoxels(true);
+		});
+	}
+
 	function onNextFrameRequest() {
 
 		if ( !running ){
@@ -298,7 +325,13 @@
 
 	function onWindowResize() {
 
-		sizeCanvas();
+		clearTimeout(resizeTimer);
+		resizeTimer = setTimeout(function () {
+
+			sizeCanvas();
+			genesis();
+			givePropertiesToVoxels();
+		}, 1000);
 	}
 
 	function onAnimationFrame() {
@@ -307,27 +340,7 @@
 		fps = Math.round(1000 / (now - time));
 		time = now;
 
-		var livingVoxels = renderVoxels();
-
-		if ( livingVoxels === 0 ) {
-
-			switch ( onDead ) {
-
-				case "reset":
-					out( "all dead after frame "+frame );
-					frame = 0;
-					setVoxelProperties();
-					break;
-
-				case "stop":
-					out( "all dead after frame "+frame );
-					stop();
-					break;
-
-				case "loop":
-					// do nothing
-			}
-		}
+		renderVoxels();
 
 		if ( running ) {
 			nextFrame();
@@ -356,7 +369,8 @@ function Voxel( x, y, canvas ) {
 	this.y = null;
 
 	this.next = null;
-	this.isAlive = false;
+	this.isAlive = null;
+	this.wasAlive = null;
 	this.scale = 1;
 
 	this.feelsAlive = function () {
