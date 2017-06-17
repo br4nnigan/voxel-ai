@@ -26,7 +26,7 @@ function Voxel( x, y, canvas ) {
 		if ( this.t && this.t.wasAlive ) {
 			contacts++;
 		}
-		if ( this.tr && this.tr.wasAlive ) {
+		if ( this.tr && this.tr.isAlive ) {
 			contacts++;
 		}
 		if ( this.r && this.r.isAlive ) {
@@ -38,7 +38,7 @@ function Voxel( x, y, canvas ) {
 		if ( this.b && this.b.isAlive ) {
 			contacts++;
 		}
-		if ( this.bl && this.b.isAlive ) {
+		if ( this.bl && this.bl.wasAlive ) {
 			contacts++;
 		}
 		if ( this.l && this.l.wasAlive ) {
