@@ -21,13 +21,13 @@ function Voxel( x, y, canvas ) {
 
 	this.feelsAlive = function () {
 		var contacts = 0;
-		if ( this.tl && this.tl.wasAlive ) {
+		if ( this.tl && this.tl.isAlive ) {
 			contacts++;
 		}
-		if ( this.t && this.t.wasAlive ) {
+		if ( this.t && this.t.isAlive ) {
 			contacts++;
 		}
-		if ( this.tr && this.tr.wasAlive ) {
+		if ( this.tr && this.tr.isAlive ) {
 			contacts++;
 		}
 		if ( this.r && this.r.isAlive ) {
@@ -39,19 +39,19 @@ function Voxel( x, y, canvas ) {
 		if ( this.b && this.b.isAlive ) {
 			contacts++;
 		}
-		if ( this.bl && this.b.isAlive ) {
+		if ( this.bl && this.bl.isAlive ) {
 			contacts++;
 		}
-		if ( this.l && this.l.wasAlive ) {
+		if ( this.l && this.l.isAlive ) {
 			contacts++;
 		}
-		return contacts === 1 || contacts === 2;
+		return this.isAlive ? contacts === 3 || contacts === 2 : contacts === 3;
 	};
 
 	this.render = function () {
 
-		ctx.fillStyle = this.isAlive ? 'white' : 'black';
-		ctx.fillRect(this.x, this.y, 1, 1);
+		ctx.fillStyle = this.isAlive ? 'black' : 'white';
+		ctx.fillRect(x, y, 1, 1);
 	}
 
 	if ( !(canvas.width > x && canvas.height > y) ) this.render = function () {

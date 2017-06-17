@@ -11,12 +11,12 @@ function Voxel( x, y, canvas ) {
 	this.bl = null;
 	this.l = null;
 
-
 	this.x = null;
 	this.y = null;
 
 	this.next = null;
 	this.isAlive = false;
+	this.scale = 1;
 
 	this.feelsAlive = function () {
 		var contacts = 0;
@@ -47,15 +47,15 @@ function Voxel( x, y, canvas ) {
 		return this.isAlive ? contacts === 3 || contacts === 2 : contacts === 3;
 	};
 
-	this.render = function () {
+	this.render = function (force) {
+
+		var s = this.scale;
+
+		if ( this.wasAlive == this.isAlive && !force ) return;
 
 		ctx.fillStyle = this.isAlive ? 'black' : 'white';
-		ctx.fillRect(x, y, 1, 1);
-	}
-
-	if ( !(canvas.width > x && canvas.height > y) ) this.render = function () {
-		console.log("emptyrender");
-	}
+		ctx.fillRect(x*s, y*s, 1*s, 1*s);
+	};
 }
 
 
