@@ -5,14 +5,14 @@
 	var Voxel = require("./Voxel");
 
 	// dom
-	var divOut = document.getElementById("out");
-	var toggle = document.getElementById("toggle");
-	var clear = document.getElementById("clear");
-	var next = document.getElementById("next");
-	var divFps = document.getElementById("fps_out");
-	var inputFps = document.getElementById("fps_in");
-	var inputScale = document.getElementById("scale");
-	var canvas = document.getElementById("c");
+	var divOut = d.getElementById("out");
+	var toggle = d.getElementById("toggle");
+	var clear = d.getElementById("clear");
+	var next = d.getElementById("next");
+	var divFps = d.getElementById("fps_out");
+	var inputFps = d.getElementById("fps_in");
+	var inputScale = d.getElementById("scale");
+	var canvas = d.getElementById("c");
 
 	// state
 	var running = false;
@@ -60,8 +60,8 @@
 
 	function sizeCanvas() {
 
-		canvas.width = window.innerWidth - (parseInt(getComputedStyle(document.body).marginLeft) * 2);
-		canvas.height = window.innerHeight - (parseInt(getComputedStyle(document.body).marginTop) * 2) - canvas.offsetTop;
+		canvas.width = window.innerWidth - (parseInt(getComputedStyle(d.body).marginLeft) * 2);
+		canvas.height = window.innerHeight - (parseInt(getComputedStyle(d.body).marginTop) * 2) - canvas.offsetTop;
 
 		canvasScaledX = Math.floor(canvas.width / scale);
 		canvasScaledY = Math.floor(canvas.height / scale);
@@ -155,7 +155,7 @@
 
 	// function out(str) {
 
-	// 	var row = document.createElement("div");
+	// 	var row = d.createElement("div");
 	// 		row.textContent = str;
 
 	// 	divOut.appendChild(row);
@@ -351,7 +351,5 @@
 			nextFrame();
 		}
 	}
-
-
 
 })(document);
