@@ -44,7 +44,7 @@ function Voxel( x, y, canvas ) {
 		if ( this.l && this.l.wasAlive ) {
 			contacts++;
 		}
-		return contacts === 2 || contacts === 1;
+		return this.isAlive ? contacts === 3 || contacts === 2 : contacts === 3;
 	};
 
 	this.render = function () {
