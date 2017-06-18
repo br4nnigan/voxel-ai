@@ -414,7 +414,7 @@ function Voxel( x, y, canvas ) {
 
 		if ( this.wasAlive == this.isAlive && !force ) return;
 
-		ctx.fillStyle = this.isAlive ? 'black' : 'white';
+		ctx.fillStyle = this.isAlive ? 'black' : this.wasAlive ? '#cccccc' : 'white';
 		ctx.fillRect(x*s, y*s, 1*s, 1*s);
 	};
 }
